@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://turbo.bible/sitemap.xml
+Sitemap: https://turbobible.no/sitemap.xml

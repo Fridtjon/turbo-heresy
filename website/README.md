@@ -1,6 +1,6 @@
 # website/
 
-Hand-authored static site for turbo-bible. No build step, no SSG —
+Hand-authored static site for turbo-heresy. No build step, no SSG —
 just HTML, CSS, and a sprinkle of JS.
 
 ## Deploy
@@ -8,7 +8,7 @@ just HTML, CSS, and a sprinkle of JS.
 GitHub Pages. `.github/workflows/pages.yml` triggers on push to
 `main` whenever anything under `website/**` changes (or on manual
 `workflow_dispatch`) and uploads this directory as the Pages
-artifact. `CNAME` pins the custom domain to `turbo.bible`.
+artifact. `CNAME` pins the custom domain to `turbobible.no`.
 
 DNS setup (do once, in the registrar): four `A` records for the
 apex pointing at GitHub Pages (`185.199.108.153`, `.109.153`,

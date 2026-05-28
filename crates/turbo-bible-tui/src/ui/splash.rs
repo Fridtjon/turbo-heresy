@@ -33,14 +33,14 @@ const TITLE_TURBO: &[&str] = &[
     "   ██║   ╚██████╔╝██║  ██║██████╔╝╚██████╔╝",
     "   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═════╝  ╚═════╝ ",
 ];
-const TITLE_BIBLE: &[&str] = &[
-    "██████╗ ██╗██████╗ ██╗     ███████╗",
-    "██╔══██╗██║██╔══██╗██║     ██╔════╝",
-    "██████╔╝██║██████╔╝██║     █████╗  ",
-    "██████╔╝██║██████╔╝███████╗███████╗",
-    "╚═════╝ ╚═╝╚═════╝ ╚══════╝╚══════╝",
+const TITLE_HERESY: &[&str] = &[
+    "██╗  ██╗███████╗██████╗ ███████╗███████╗██╗   ██╗",
+    "██║  ██║██╔════╝██╔══██╗██╔════╝██╔════╝╚██╗ ██╔╝",
+    "███████║█████╗  ██████╔╝█████╗  ███████╗ ╚████╔╝ ",
+    "██║  ██║███████╗██║  ██║███████╗███████║   ██║   ",
+    "╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ",
 ];
-const TITLE_COMPACT: &str = "T U R B O   B I B L E";
+const TITLE_COMPACT: &str = "T U R B O   H E R E S Y";
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum SplashMode {
@@ -374,7 +374,7 @@ impl SplashView {
         let w = outer.width.saturating_sub(6).min(110);
         let h = outer.height.saturating_sub(2);
         let area = dialog::center(outer, w, h);
-        let inner = dialog::draw_dialog(area, "Turbo Bible", buf);
+        let inner = dialog::draw_dialog(area, "Turbo Heresy", buf);
 
         let styles = RenderStyles::new(self.mode);
         let inner_w = inner.width as usize;
@@ -412,10 +412,10 @@ impl SplashView {
         // one-line title so the daily verse + book picker own the screen.
         // Narrow terminals also fall back to compact. Side-by-side, then
         // stacked, then the one-liner.
-        let combined_w = TITLE_TURBO[0].chars().count() + 2 + TITLE_BIBLE[0].chars().count();
+        let combined_w = TITLE_TURBO[0].chars().count() + 2 + TITLE_HERESY[0].chars().count();
         let want_full = self.last.is_none();
         if want_full && inner_w >= combined_w && avail >= 10 {
-            for (t, b) in TITLE_TURBO.iter().zip(TITLE_BIBLE.iter()) {
+            for (t, b) in TITLE_TURBO.iter().zip(TITLE_HERESY.iter()) {
                 lines.push(center_padded(
                     inner_w,
                     styles.bg,
@@ -424,7 +424,7 @@ impl SplashView {
                 ));
             }
         } else if want_full && inner_w >= TITLE_TURBO[0].chars().count() && avail >= 18 {
-            for row in TITLE_TURBO.iter().chain(TITLE_BIBLE.iter()) {
+            for row in TITLE_TURBO.iter().chain(TITLE_HERESY.iter()) {
                 lines.push(center_padded(inner_w, styles.bg, row, styles.title));
             }
         } else {
@@ -969,7 +969,7 @@ fn testament_labels(code: &str) -> (&'static str, &'static str) {
         "fr" => ("Ancien Testament", "Nouveau Testament"),
         "pt" => ("Antigo Testamento", "Novo Testamento"),
         "la" => ("Vetus Testamentum", "Novum Testamentum"),
-        _ => ("Old Testament", "New Testament"),
+        _ => ("The Old Curse", "The New Blasphemy"),
     }
 }
 
@@ -988,7 +988,6 @@ fn truncate(s: &str, max: usize) -> String {
 mod tests {
     use super::*;
     use ratatui::buffer::Buffer;
-    use ratatui::style::Color;
 
     fn fake_books(n_ot: usize, n_nt: usize) -> Vec<Book> {
         let mut out = Vec::new();
@@ -1016,10 +1015,14 @@ mod tests {
     }
 
     fn find_cursor_row(buf: &Buffer) -> Option<u16> {
-        let cyan = Color::Rgb(0, 170, 170);
+        // The selected row renders as bright_white on list_focus_bg() (see
+        // RenderStyles.sel); read the slots from the theme so the test follows
+        // any palette, including Abyssal.
+        let sel_bg = theme::list_focus_bg();
+        let sel_fg = theme::bright_white();
         for y in 0..buf.area.height {
             for x in 0..buf.area.width {
-                if buf[(x, y)].bg == cyan && buf[(x, y)].fg == Color::Rgb(255, 255, 255) {
+                if buf[(x, y)].bg == sel_bg && buf[(x, y)].fg == sel_fg {
                     return Some(y);
                 }
             }
@@ -1070,20 +1073,18 @@ mod tests {
         let mut buf = Buffer::empty(area);
         splash.render(area, &mut buf);
         // The combined-art row contains TURBO art ending with "██████╗ " and
-        // immediately afterwards (after the "  " gap) BIBLE art starting with
-        // "██████╗". On a single row we should see both signatures.
+        // immediately afterwards (after the "  " gap) HERESY art starting with
+        // the H glyph. On a single row we should see both signatures.
         let mut found_combined = false;
         for y in 0..area.height {
             let mut row_text = String::new();
             for x in 0..area.width {
                 row_text.push(buf[(x, y)].symbol().chars().next().unwrap_or(' '));
             }
-            // The TURBO art's row 1 ends "██████╗  ██████╗ "; the BIBLE art's
-            // row 1 begins "██████╗ ██╗██████╗". Look for the unique BIBLE
-            // signature "██╗██████╗ ██╗     ███████╗" which only appears in
-            // BIBLE's first row, and verify the row ALSO contains TURBO's
-            // "╗██╗   ██╗" signature.
-            if row_text.contains("██╗     ███████╗") && row_text.contains("██████╗  ██████╗ ")
+            // TURBO's row 1 ends "██████╗  ██████╗ "; HERESY's row 1 begins
+            // "██╗  ██╗███████╗" (the H glyph + start of E). Both signatures on
+            // a single row means the two words rendered side by side.
+            if row_text.contains("██╗  ██╗███████╗") && row_text.contains("██████╗  ██████╗ ")
             {
                 found_combined = true;
                 break;
@@ -1091,7 +1092,7 @@ mod tests {
         }
         assert!(
             found_combined,
-            "expected TURBO and BIBLE block letters on the same row"
+            "expected TURBO and HERESY block letters on the same row"
         );
     }
 

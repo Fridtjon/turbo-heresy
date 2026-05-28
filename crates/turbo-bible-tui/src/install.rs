@@ -1,6 +1,6 @@
 //! Extract the binary's bundled `.db.zst` assets (see
 //! [`crate::bundled`]) into `paths::translations_dir()` on first
-//! launch, plus the `turbo-bible install` CLI handler.
+//! launch, plus the `turbo-heresy install` CLI handler.
 //!
 //! Only `en-kjv` is embedded; the other translations and the shared
 //! `xrefs.db` come from [`crate::fetch`] on demand. Idempotent: a
@@ -16,7 +16,7 @@ use anyhow::{Context, Result};
 use crate::bundled::{BUNDLED, BundledAsset};
 use crate::paths;
 
-/// CLI args for `turbo-bible install`.
+/// CLI args for `turbo-heresy install`.
 #[derive(Debug, clap::Args)]
 pub struct InstallArgs {
     /// Re-extract bundled translations even if `<code>.db` already exists.
@@ -27,7 +27,7 @@ pub struct InstallArgs {
     pub translations_dir: Option<PathBuf>,
 }
 
-/// CLI entry point for `turbo-bible install`.
+/// CLI entry point for `turbo-heresy install`.
 ///
 /// # Errors
 /// Propagates IO and zstd-decode failures.
@@ -218,6 +218,10 @@ mod tests {
     fn extracted_db_has_expected_invariants() {
         let dir = tempdir();
         ensure_installed(dir.path()).expect("install");
+        // The bundled scriptures are partial canons (Paradise Lost = 12 books,
+        // Liber AL = 1, the Unholy Writ = 4), so we no longer assert a fixed
+        // 66. The portable invariants: book_label mirrors book, both are
+        // non-empty, and meta.verse_count equals the actual verse rows.
         for asset in BUNDLED {
             let p = dir.path().join(format!("{}.db", asset.code));
             let conn =
@@ -225,11 +229,15 @@ mod tests {
             let books: i64 = conn
                 .query_row("SELECT COUNT(*) FROM book", [], |r| r.get(0))
                 .expect("count book");
-            assert_eq!(books, 66, "{}.db book count", asset.code);
             let labels: i64 = conn
                 .query_row("SELECT COUNT(*) FROM book_label", [], |r| r.get(0))
                 .expect("count book_label");
-            assert_eq!(labels, 66, "{}.db book_label count", asset.code);
+            assert!(books > 0, "{}.db has no books", asset.code);
+            assert_eq!(
+                books, labels,
+                "{}.db book / book_label mismatch",
+                asset.code
+            );
             let meta_count: i64 = conn
                 .query_row("SELECT verse_count FROM meta", [], |r| r.get(0))
                 .expect("meta.verse_count");
@@ -246,7 +254,7 @@ mod tests {
 
     #[test]
     fn manifest_integrity_known_unknown_and_xrefs() {
-        assert!(manifest_integrity("en-kjv").is_some());
+        assert!(manifest_integrity("en-plost").is_some());
         assert!(manifest_integrity("xrefs").is_some());
         assert!(manifest_integrity("zz-nope").is_none());
     }

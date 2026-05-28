@@ -1,4 +1,4 @@
-//! `turbo-bible-data build` — parse scrollmapper JSON exports and
+//! `turbo-heresy-data build` — parse scrollmapper JSON exports and
 //! produce one self-contained `<code>.db` per translation, plus a
 //! shared `xrefs.db`.
 

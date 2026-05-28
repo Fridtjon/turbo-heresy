@@ -1,11 +1,11 @@
-# Contributing to turbo-bible
+# Contributing to turbo-heresy
 
 ## Workspace layout
 
 ```
 crates/
-  turbo-bible-tui/    # the TUI binary
-  turbo-bible-data/   # offline data pipeline (scrollmapper -> .db.zst)
+  turbo-bible-tui/    # the TUI binary (package: turbo-heresy)
+  turbo-bible-data/   # data pipeline dir (package: turbo-heresy-data; unused by the reskin)
 website/              # hand-authored static site (GitHub Pages, no SSG)
 ```
 
@@ -40,9 +40,9 @@ just test         # cargo test --workspace --all-features
 just audit        # cargo audit
 just deny         # cargo deny check (license + duplicate-version + source policy)
 just baseline     # the rust-review baseline; writes target/rust-review/*.log
-just run          # cargo run -p turbo-bible --release
+just run          # cargo run -p turbo-heresy --release
 just run --book JHN --chapter 3
-just data-build   # cargo run -p turbo-bible-data -- build ...
+just data-build   # cargo run -p turbo-heresy-data -- build ...
 ```
 
 If you can't / don't want to install `just`, every recipe is a thin shell
@@ -94,13 +94,13 @@ tags matching `v*` and runs three things in parallel/serial:
 1. Build prebuilt binaries for four targets (x86_64 + aarch64 Linux,
    aarch64 macOS, x86_64 Windows). macOS is Apple Silicon only —
    GitHub retired the Intel runner image, so Intel Macs build from
-   source (`cargo install turbo-bible`). Each build job clones
+   source (`cargo install turbo-heresy`). Each build job clones
    `scrollmapper/bible_databases` at the pinned `SCROLLMAPPER_REF`
    env var in the workflow, runs `just bundle-translations` to
    populate `crates/turbo-bible-tui/assets/`, then `cargo build
    --release`. Tarballs land as release assets, named
-   `turbo-bible-<target>.{tar.gz,zip}`.
-2. Publish `turbo-bible` to crates.io. Requires a `CARGO_REGISTRY_TOKEN`
+   `turbo-heresy-<target>.{tar.gz,zip}`.
+2. Publish `turbo-heresy` to crates.io. Requires a `CARGO_REGISTRY_TOKEN`
    secret in the repo settings (Settings → Secrets and variables →
    Actions). Same pre-step bundles translations into the published
    tarball — they're gitignored locally but pulled in via the
@@ -108,7 +108,7 @@ tags matching `v*` and runs three things in parallel/serial:
 3. `website/install.sh` is hand-authored and downloads whichever
    tarball matches the running platform from
    `releases/latest/download/`. The Pages workflow keeps it served
-   from `turbo.bible/install.sh`.
+   from `turbobible.no/install.sh`.
 
 To cut `v0.1.0`:
 
@@ -142,4 +142,4 @@ When reporting a bug, include:
   Windows console may not).
 - Output of `cargo --version` and `rustc --version`.
 - Steps to reproduce. The state files
-  (`~/.config/turbo-bible/{state,config,bookmarks}.toml`) often help.
+  (`~/.config/turbo-heresy/{state,config,bookmarks}.toml`) often help.

@@ -34,11 +34,11 @@ fn workspace_root() -> PathBuf {
 }
 
 fn run_cli(args: &[&str]) {
-    let status = Command::new(env!("CARGO_BIN_EXE_turbo-bible-data"))
+    let status = Command::new(env!("CARGO_BIN_EXE_turbo-heresy-data"))
         .args(args)
         .status()
-        .expect("spawn turbo-bible-data");
-    assert!(status.success(), "turbo-bible-data {args:?} failed");
+        .expect("spawn turbo-heresy-data");
+    assert!(status.success(), "turbo-heresy-data {args:?} failed");
 }
 
 fn sha256_hex(bytes: &[u8]) -> String {

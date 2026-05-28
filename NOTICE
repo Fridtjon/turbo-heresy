@@ -1,39 +1,34 @@
-turbo-bible
+turbo-heresy
 Copyright 2026 Mathias Rørvik
 
 Licensed under either of Apache License, Version 2.0 (LICENSE-APACHE) or
 MIT license (LICENSE-MIT) at your option.
 
-This product bundles the following third-party text and data, each
-under its own terms:
+turbo-heresy is a parody reskin of turbo-bible. It ships none of the
+eleven Bible translations the original bundles; instead it embeds the
+three public-domain / original "scriptures" below, each under its own
+terms:
 
 ──────────────────────────────────────────────────────────────────────
-Bible translation texts and metadata, derived from:
-  scrollmapper/bible_databases
-  https://github.com/scrollmapper/bible_databases
+Bundled scriptures:
 
-Per-translation licensing of the bundled texts:
+  en-plost      Paradise Lost — John Milton (1667)            Public Domain
+  en-liber-al   Liber AL vel Legis — Aleister Crowley (1904)  Public Domain*
+  en-unholy     The Unholy Writ — original parody             CC0-1.0
 
-  en-kjv          King James Version (1769)            Public Domain
-  en-asv          American Standard Version (1901)     Public Domain
-  en-ylt          Young's Literal Translation (1898)   Public Domain
-  en-drc          Douay-Rheims-Challoner               Public Domain
-  en-bsb          Berean Standard Bible                CC0-1.0
-  nb-1930         Bibelen 1930 (Bokmål)                Public Domain
-  es-rv1909       Reina-Valera 1909                    Public Domain
-  de-menge        Menge-Bibel (1939)                   Public Domain
-  fr-crampon      La Bible Crampon (1923)              Public Domain
-  pt-blivre       Bíblia Livre                         CC-BY 3.0 BR
-  la-clementine   Clementine Vulgate (1592)            Public Domain
+  * Liber AL vel Legis is public domain in jurisdictions applying a
+    life-plus-70-years term (Crowley died 1947) — in effect since 2018.
+    Ordo Templi Orientis contests its U.S. copyright status. Bundled
+    here for personal, non-commercial use.
 
-The Bíblia Livre translation is distributed under
-Creative Commons Attribution 3.0 Brazil (CC-BY-3.0-BR):
-  https://creativecommons.org/licenses/by/3.0/br/
+Paradise Lost is sourced from Project Gutenberg eBook #26 (public
+domain). Liber AL vel Legis is transcribed from a widely-circulated
+public-domain edition. The Unholy Writ is an original CC0-1.0 work.
 
-The texts above are bundled byte-for-byte from scrollmapper's
-exports; turbo-bible does not edit translation content.
+The texts are built into per-translation SQLite databases by
+data/heresy/build_heresy.py; turbo-heresy does not alter their wording
+beyond whitespace normalization.
 
 ──────────────────────────────────────────────────────────────────────
-Cross-references DB (xrefs.db) is derived from openbible.info's
-public-domain cross-reference dataset, redistributed through the
-scrollmapper/bible_databases project.
+turbo-heresy is an independent parody and is not affiliated with,
+endorsed by, or connected to turbo.bible.

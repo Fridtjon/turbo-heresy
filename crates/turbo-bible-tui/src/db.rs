@@ -25,7 +25,7 @@ pub struct TranslationInfo {
     pub code: String,
     pub name: String,
     /// Read by `merge_picker_entries` to label on-disk translations that
-    /// aren't in the static manifest (e.g. `turbo-bible import` output).
+    /// aren't in the static manifest (e.g. `turbo-heresy import` output).
     pub language: String,
 }
 
@@ -251,7 +251,7 @@ impl Db {
         }
         if translation_files.is_empty() {
             bail!(
-                "no translation .db files found in {} — run `turbo-bible install`",
+                "no translation .db files found in {} — run `turbo-heresy install`",
                 translations_dir.display()
             );
         }
@@ -862,24 +862,24 @@ mod tests {
         let tmp = tempfile::tempdir().unwrap();
         crate::install::ensure_installed(tmp.path()).expect("install");
 
-        let db = Db::open_ro(tmp.path(), "en-kjv").expect("open_ro");
-        assert_eq!(db.translation(), "en-kjv");
-        assert!(db.translations().iter().any(|t| t.code == "en-kjv"));
+        let db = Db::open_ro(tmp.path(), "en-plost").expect("open_ro");
+        assert_eq!(db.translation(), "en-plost");
+        assert!(db.translations().iter().any(|t| t.code == "en-plost"));
         assert!(!db.has_xrefs(), "fresh install has no xrefs.db yet");
 
         let label = db.translation_label().expect("label");
-        assert!(label.contains("King James"));
-        assert!(label.contains("en-kjv"));
+        assert!(label.contains("Paradise Lost"));
+        assert!(label.contains("en-plost"));
 
         let books = db.list_books().expect("list_books");
-        assert_eq!(books.len(), 66);
+        assert_eq!(books.len(), 12);
 
-        let passage = db.load_passage("JHN", 3).expect("John 3");
+        let passage = db.load_passage("GEN", 1).expect("Paradise Lost, Book I");
         assert!(
             passage
                 .verses
                 .iter()
-                .any(|v| v.number == 16 && v.text.contains("God") && v.text.contains("world"))
+                .any(|v| v.number == 1 && v.text.contains("disobedience"))
         );
         // No xrefs.db means an empty xref list — not an error.
         assert!(passage.xrefs.is_empty());
@@ -889,17 +889,19 @@ mod tests {
     fn load_passage_for_matches_active_and_leaves_it_unchanged() {
         let tmp = tempfile::tempdir().unwrap();
         crate::install::ensure_installed(tmp.path()).expect("install");
-        let mut db = Db::open_ro(tmp.path(), "en-kjv").expect("open_ro");
+        let mut db = Db::open_ro(tmp.path(), "en-plost").expect("open_ro");
 
         // `load_passage_for(active, ..)` matches `load_passage(..)`.
-        let active = db.load_passage("JHN", 3).expect("active John 3");
-        let via_for = db.load_passage_for("en-kjv", "JHN", 3).expect("for John 3");
+        let active = db.load_passage("GEN", 1).expect("active Book I");
+        let via_for = db
+            .load_passage_for("en-plost", "GEN", 1)
+            .expect("for Book I");
         assert_eq!(active.verses.len(), via_for.verses.len());
         assert_eq!(active.verses[15].text, via_for.verses[15].text);
 
         // set_active round-trips and is observable via load_passage.
-        db.set_active("en-kjv").expect("set_active");
-        assert_eq!(db.translation(), "en-kjv");
+        db.set_active("en-plost").expect("set_active");
+        assert_eq!(db.translation(), "en-plost");
 
         // A second translation (when bundled) is readable via `_for` without
         // changing the active one.
@@ -908,7 +910,7 @@ mod tests {
             let nb = db.load_passage_for("nb-1930", "JHN", 3).expect("nb John 3");
             assert_eq!(nb.translation, "nb-1930");
             assert_ne!(nb.verses[0].text, active.verses[0].text);
-            assert_eq!(db.translation(), "en-kjv", "_for must not change active");
+            assert_eq!(db.translation(), "en-plost", "_for must not change active");
         }
     }
 
@@ -916,9 +918,9 @@ mod tests {
     fn set_active_rejects_uninstalled() {
         let tmp = tempfile::tempdir().unwrap();
         crate::install::ensure_installed(tmp.path()).expect("install");
-        let mut db = Db::open_ro(tmp.path(), "en-kjv").expect("open_ro");
+        let mut db = Db::open_ro(tmp.path(), "en-plost").expect("open_ro");
         assert!(db.set_active("zz-nope").is_err());
-        assert_eq!(db.translation(), "en-kjv", "failed set_active is a no-op");
+        assert_eq!(db.translation(), "en-plost", "failed set_active is a no-op");
     }
 
     #[test]
@@ -932,8 +934,8 @@ mod tests {
             return;
         }
 
-        let mut db = Db::open_ro(tmp.path(), "en-kjv").expect("open_ro");
-        assert!(db.translations().iter().any(|t| t.code == "en-kjv"));
+        let mut db = Db::open_ro(tmp.path(), "en-plost").expect("open_ro");
+        assert!(db.translations().iter().any(|t| t.code == "en-plost"));
 
         // Capture the KJV verse before swapping — load_passage reads
         // from whichever translation is active.
@@ -953,10 +955,10 @@ mod tests {
     fn try_switch_translation_rejects_uninstalled() {
         let tmp = tempfile::tempdir().unwrap();
         crate::install::ensure_installed(tmp.path()).expect("install");
-        let mut db = Db::open_ro(tmp.path(), "en-kjv").expect("open_ro");
+        let mut db = Db::open_ro(tmp.path(), "en-plost").expect("open_ro");
         let err = db.try_switch_translation("xx-bogus", "JHN", 3).unwrap_err();
         assert!(format!("{err}").contains("xx-bogus"));
-        assert_eq!(db.translation(), "en-kjv");
+        assert_eq!(db.translation(), "en-plost");
     }
 
     /// Build a partial (John-only) translation DB at `<dir>/<code>.db` using
@@ -986,7 +988,7 @@ mod tests {
     fn load_passage_clamped_for_falls_back_to_first_book_when_absent() {
         let tmp = tempfile::tempdir().unwrap();
         crate::install::ensure_installed(tmp.path()).expect("install");
-        let mut db = Db::open_ro(tmp.path(), "en-kjv").expect("open_ro");
+        let mut db = Db::open_ro(tmp.path(), "en-plost").expect("open_ro");
 
         // A John-only edition that lacks Genesis. The compare-pane open path
         // used to `?`-propagate the missing-book lookup, crashing the TUI.
@@ -1026,7 +1028,7 @@ mod tests {
         assert!(exact.verses.iter().any(|v| v.number == 16));
         assert_eq!(
             db.translation(),
-            "en-kjv",
+            "en-plost",
             "_clamped_for must not change active"
         );
     }
@@ -1035,7 +1037,7 @@ mod tests {
     fn load_passage_clamped_for_rejects_uninstalled() {
         let tmp = tempfile::tempdir().unwrap();
         crate::install::ensure_installed(tmp.path()).expect("install");
-        let db = Db::open_ro(tmp.path(), "en-kjv").expect("open_ro");
+        let db = Db::open_ro(tmp.path(), "en-plost").expect("open_ro");
         let err = db
             .load_passage_clamped_for("xx-bogus", "JHN", 3)
             .unwrap_err();
@@ -1063,11 +1065,11 @@ mod tests {
         fs::create_dir_all(&dir).expect("create funky dir");
         crate::install::ensure_installed(&dir).expect("install into funky path");
 
-        let db = Db::open_ro(&dir, "en-kjv").expect("open_ro under space+apostrophe path");
+        let db = Db::open_ro(&dir, "en-plost").expect("open_ro under space+apostrophe path");
         let passage = db
-            .load_passage("JHN", 3)
-            .expect("load John 3 (ATTACH must resolve)");
-        assert!(passage.verses.iter().any(|v| v.number == 16));
+            .load_passage("GEN", 1)
+            .expect("load Book I (ATTACH must resolve)");
+        assert!(passage.verses.iter().any(|v| v.number == 1));
     }
 
     #[test]
@@ -1094,7 +1096,7 @@ mod tests {
         let xrefs_target = tmp.path().join("xrefs.db");
         let staged = tmp.path().join("xrefs.db.staged");
         fs::rename(&xrefs_target, &staged).expect("hide xrefs");
-        let mut db = Db::open_ro(tmp.path(), "en-kjv").expect("open_ro");
+        let mut db = Db::open_ro(tmp.path(), "en-plost").expect("open_ro");
         assert!(!db.has_xrefs());
         assert!(db.load_passage("JHN", 3).expect("john 3").xrefs.is_empty());
         fs::rename(&staged, &xrefs_target).expect("unhide");

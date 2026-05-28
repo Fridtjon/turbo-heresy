@@ -1,8 +1,8 @@
-//! `turbo-bible import <file.json>` — build a per-translation `SQLite`
+//! `turbo-heresy import <file.json>` — build a per-translation `SQLite`
 //! `<code>.db` from a user-supplied JSON file and drop it into the
 //! translations directory, ready to read on the next launch.
 //!
-//! Unlike the offline data pipeline ([`turbo-bible-data`]), this needs
+//! Unlike the offline data pipeline ([`turbo-heresy-data`]), this needs
 //! no scrollmapper checkout: the JSON carries the verse text, the
 //! metadata comes from CLI flags, and the schema is built here. The
 //! produced file is the same shape `Db::open_ro` expects — the
@@ -11,7 +11,7 @@
 //!
 //! See `docs/IMPORT.md` for the input format and the output schema.
 //!
-//! [`turbo-bible-data`]: ../../turbo-bible-data/index.html
+//! [`turbo-heresy-data`]: ../../turbo-heresy-data/index.html
 
 #![allow(
     clippy::redundant_pub_crate,
@@ -43,7 +43,7 @@ const IMPORT_PROVENANCE: &str = "user-import";
 /// `crates/turbo-bible-data/src/schema.rs` (`TRANSLATION_SCHEMA_SQL`).
 /// The TUI crate is standalone and does not depend on the data crate,
 /// so the two must stay in sync by hand — same deliberate duplication
-/// as `turbo-bible-data/src/osis.rs`. The full schema (incl. the empty
+/// as `turbo-heresy-data/src/osis.rs`. The full schema (incl. the empty
 /// `heading`/`footnote` tables and the FTS triggers) is required: the
 /// runtime queries those tables, and the `verse_ai` trigger is what
 /// populates `verse_fts` as rows are inserted below.
@@ -125,7 +125,7 @@ END;
 
 /// One canonical Protestant book: OSIS code, default English label,
 /// default abbreviation, testament, and canonical ordinal. Mirrors
-/// `turbo-bible-data`'s `osis::BOOKS` + `labels::KJV_LABELS`.
+/// `turbo-heresy-data`'s `osis::BOOKS` + `labels::KJV_LABELS`.
 struct Canon {
     osis: &'static str,
     name: &'static str,
@@ -213,7 +213,7 @@ fn resolve_book(ident: &str) -> Option<&'static Canon> {
         .find(|c| c.osis.eq_ignore_ascii_case(t) || c.name.eq_ignore_ascii_case(t))
 }
 
-/// CLI args for `turbo-bible import`.
+/// CLI args for `turbo-heresy import`.
 #[derive(Debug, clap::Args)]
 pub struct ImportArgs {
     /// Path to the translation JSON file to import (see `docs/IMPORT.md`).
@@ -291,7 +291,7 @@ struct ImportVerse {
     text: String,
 }
 
-/// CLI entry point for `turbo-bible import`.
+/// CLI entry point for `turbo-heresy import`.
 ///
 /// # Errors
 /// Bad `--code`, unreadable/invalid JSON, an unknown book name, a
@@ -313,7 +313,7 @@ pub fn run(args: &ImportArgs) -> Result<()> {
     let body =
         fs::read_to_string(&args.file).with_context(|| format!("read {}", args.file.display()))?;
     let parsed: ImportJson = serde_json::from_str(&body)
-        .with_context(|| format!("parse {} as turbo-bible import JSON", args.file.display()))?;
+        .with_context(|| format!("parse {} as turbo-heresy import JSON", args.file.display()))?;
 
     let meta = ImportMeta {
         code: &args.code,
@@ -679,7 +679,7 @@ mod tests {
 
     /// Guards against [`TRANSLATION_SCHEMA_SQL`] drifting from the data
     /// pipeline. Compares the import-built schema against the bundled
-    /// `en-kjv.db` (produced by `turbo-bible-data`): object set (tables,
+    /// `en-kjv.db` (produced by `turbo-heresy-data`): object set (tables,
     /// indexes, triggers, FTS shadow tables) plus per-table columns.
     #[test]
     fn import_schema_matches_pipeline_built_db() {
@@ -711,14 +711,15 @@ mod tests {
 
         let asset = crate::bundled::BUNDLED
             .iter()
-            .find(|a| a.code == "en-kjv")
-            .expect("en-kjv is bundled");
-        let kjv = dir.path().join("en-kjv.db");
-        let bytes = zstd::decode_all(std::io::Cursor::new(asset.bytes)).expect("decompress kjv");
-        fs::write(&kjv, &bytes).unwrap();
+            .find(|a| a.code == crate::bundled::DEFAULT_TRANSLATION)
+            .expect("default scripture is bundled");
+        let pipeline_db = dir.path().join("pipeline.db");
+        let bytes =
+            zstd::decode_all(std::io::Cursor::new(asset.bytes)).expect("decompress default");
+        fs::write(&pipeline_db, &bytes).unwrap();
 
         let a = open_ro(&imported);
-        let b = open_ro(&kjv);
+        let b = open_ro(&pipeline_db);
         assert_eq!(
             objects(&a),
             objects(&b),
@@ -841,7 +842,7 @@ mod tests {
         assert!(validate_code("En-John").is_err()); // uppercase
         assert!(validate_code("a/b").is_err()); // path separator
         assert!(validate_code("-x").is_err()); // leading hyphen
-        assert!(validate_code("en-kjv").is_err()); // shadows a built-in translation
+        assert!(validate_code("en-plost").is_err()); // shadows a built-in scripture
     }
 
     #[test]

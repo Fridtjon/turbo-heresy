@@ -1,4 +1,4 @@
-//! Bookmark persistence. Stored as TOML at `~/.config/turbo-bible/bookmarks.toml`.
+//! Bookmark persistence. Stored as TOML at `~/.config/turbo-heresy/bookmarks.toml`.
 //!
 //! v1 used JSON at `bookmarks.json`; this loader reads either and rewrites
 //! to TOML on the next save. Old bookmarks tagged `translation = "nb-2024"`

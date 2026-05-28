@@ -14,8 +14,8 @@ use clap::{Args, Parser, Subcommand};
 
 #[derive(Parser, Debug)]
 #[command(
-    name = "turbo-bible-data",
-    about = "Offline data pipeline for turbo-bible.",
+    name = "turbo-heresy-data",
+    about = "Offline data pipeline for turbo-heresy.",
     long_about = "Audits scrollmapper licenses, builds per-translation SQLite \
                   files from scrollmapper JSON exports, and compresses them \
                   for distribution."

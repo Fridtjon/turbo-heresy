@@ -97,7 +97,7 @@ impl GotoDialog {
         // former empty vertical slack.
         let h: u16 = 7;
         let area = dialog::center(outer, w, h);
-        let inner = dialog::draw_modal_dialog(outer, area, "Goto reference", buf);
+        let inner = dialog::draw_modal_dialog(outer, area, "Summon passage", buf);
 
         // The preview names the resolved destination, so "joh 3 16" visibly
         // becomes "John 3:16" — confirming the parse. An untouched pre-fill
@@ -105,7 +105,7 @@ impl GotoDialog {
         // current reference back as "Will jump to: …" reads as a redundant
         // duplicate of the input field directly above it.
         let preview = if self.prefilled {
-            "(type a reference, or Enter to stay here)".to_string()
+            "(summon a passage, or Enter to remain here)".to_string()
         } else {
             parse_reference(&self.input, books).map_or_else(
                 || "(type a book and chapter)".to_string(),

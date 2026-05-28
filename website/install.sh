@@ -1,23 +1,23 @@
 #!/bin/sh
-# Turbo Bible installer.
+# Turbo Heresy installer.
 #
 # Detects the running OS/arch, downloads the matching tarball from the
 # latest GitHub release, extracts the binary into ~/.local/bin (or
 # /usr/local/bin if it exists and is writable), and prints PATH
 # guidance if needed.
 #
-# Usage:  curl -fsSL turbo.bible/install.sh | sh
+# Usage:  curl -fsSL turbobible.no/install.sh | sh
 #
 # Env vars:
 #   TB_VERSION=v0.1.0   Pin to a specific tag instead of latest.
 #   TB_INSTALL_DIR=...  Override the install directory.
-#   TB_REPO=mathiasror/turbo-bible
+#   TB_REPO=mathiasror/turbo-heresy
 #
 # Exits non-zero on any failure. No telemetry.
 
 set -eu
 
-REPO="${TB_REPO:-mathiasror/turbo-bible}"
+REPO="${TB_REPO:-mathiasror/turbo-heresy}"
 VERSION="${TB_VERSION:-latest}"
 
 red()    { printf '\033[31m%s\033[0m\n' "$*" >&2; }
@@ -79,7 +79,7 @@ case "$uname_s" in
   Darwin) os=apple-darwin ;;
   MINGW*|MSYS*|CYGWIN*)
     red "This installer doesn't support Windows. Download the Windows zip"
-    red "(turbo-bible-x86_64-pc-windows-msvc.zip) from:"
+    red "(turbo-heresy-x86_64-pc-windows-msvc.zip) from:"
     red "  https://github.com/$REPO/releases/latest"
     exit 1
     ;;
@@ -105,11 +105,11 @@ target="$arch-$os"
 if [ "$target" = "x86_64-apple-darwin" ]; then
   red "No prebuilt binary for Intel (x86_64) macOS — the release ships"
   red "Apple Silicon (arm64) macOS only. Install from source instead:"
-  red "  cargo install turbo-bible"
+  red "  cargo install turbo-heresy"
   exit 1
 fi
 
-asset="turbo-bible-$target.tar.gz"
+asset="turbo-heresy-$target.tar.gz"
 
 if [ "$VERSION" = "latest" ]; then
   url="https://github.com/$REPO/releases/latest/download/$asset"
@@ -128,7 +128,7 @@ fi
 mkdir -p "$install_dir"
 
 # ── download + extract ────────────────────────────────────────────────
-tmp=$(mktemp -d "${TMPDIR:-/tmp}/turbo-bible.XXXXXX")
+tmp=$(mktemp -d "${TMPDIR:-/tmp}/turbo-heresy.XXXXXX")
 trap 'rm -rf "$tmp"' EXIT
 
 cyan "→ downloading $asset"
@@ -146,50 +146,17 @@ fi
 cyan "→ extracting"
 tar -xzf "$tmp/$asset" -C "$tmp"
 
-bin_src=$(find "$tmp" -type f -name turbo-bible -perm -u+x | head -n1)
+bin_src=$(find "$tmp" -type f -name turbo-heresy -perm -u+x | head -n1)
 if [ -z "$bin_src" ] || [ ! -f "$bin_src" ]; then
-  red "tarball did not contain a turbo-bible binary"
+  red "tarball did not contain a turbo-heresy binary"
   exit 1
 fi
 
-cyan "→ installing to $install_dir/turbo-bible"
-install -m 0755 "$bin_src" "$install_dir/turbo-bible"
+cyan "→ installing to $install_dir/turbo-heresy"
+install -m 0755 "$bin_src" "$install_dir/turbo-heresy"
 
-# ── pre-fetch the translation pack ────────────────────────────────────
-# The binary ships with only KJV embedded; everything else is fetched
-# on demand. Pulling translations.tar.gz here keeps the curl-install
-# user offline-from-the-jump — no first-launch network round trip.
-# XDG_DATA_HOME defaults to ~/.local/share on Linux/macOS; the binary
-# resolves the same path via etcetera.
-data_dir="${XDG_DATA_HOME:-$HOME/.local/share}/turbo-bible/translations"
-mkdir -p "$data_dir"
-if [ "$VERSION" = "latest" ]; then
-  pack_url="https://github.com/$REPO/releases/latest/download/translations.tar.gz"
-else
-  pack_url="https://github.com/$REPO/releases/download/$VERSION/translations.tar.gz"
-fi
-cyan "→ pre-fetching translations (~52 MB)"
-pack="$tmp/translations.tar.gz"
-# Pre-fetch is best-effort: failures here fall through to the binary's
-# on-demand fetch path (which has its own per-translation sha256 check
-# against the embedded manifest, so the bypass is safe). We still
-# verify the bundle's checksum when we do get it.
-if curl --proto '=https' --tlsv1.2 -fL "$pack_url" -o "$pack" \
-   && verify_sha256 "$pack" "$pack_url.sha256"; then
-  cyan "→ staging into $data_dir"
-  tar -xzf "$pack" -C "$tmp"
-  # Stage .db.zst files next to the binary's data dir; the binary's
-  # first-launch install pass picks them up, decompresses, and
-  # removes the .zst (see install::extract_into).
-  cp "$tmp"/*.db.zst "$data_dir/" 2>/dev/null || true
-  yellow ""
-  yellow "Translations staged. They'll decompress on first launch."
-else
-  yellow ""
-  yellow "Translation pre-fetch skipped (offline or checksum failure)."
-  yellow "The binary will download translations on demand from the"
-  yellow "Translations picker, with per-translation sha256 verification."
-fi
+# All three scriptures are embedded in the binary and extracted on
+# first launch — there is no translation pack to fetch.
 
 # ── post-install hints ────────────────────────────────────────────────
 case ":$PATH:" in
@@ -202,4 +169,4 @@ case ":$PATH:" in
 esac
 
 cyan ""
-cyan "Installed. Run: turbo-bible"
+cyan "Installed. Run: turbo-heresy"

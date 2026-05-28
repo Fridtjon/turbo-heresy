@@ -1,5 +1,5 @@
 //! XDG path resolution for the binary. Centralises the
-//! `~/.config/turbo-bible/` and `~/.local/share/turbo-bible/` joins so
+//! `~/.config/turbo-heresy/` and `~/.local/share/turbo-heresy/` joins so
 //! the three persistence modules (config, state, bookmark) don't each
 //! reinvent it.
 
@@ -8,7 +8,7 @@ use std::path::PathBuf;
 use anyhow::Result;
 use etcetera::{BaseStrategy, choose_base_strategy};
 
-/// `~/.config/turbo-bible/` on Linux / macOS via `etcetera`.
+/// `~/.config/turbo-heresy/` on Linux / macOS via `etcetera`.
 ///
 /// # Errors
 /// Propagates `etcetera::AppStrategyArgs` failures (`HOME` unset on
@@ -16,11 +16,11 @@ use etcetera::{BaseStrategy, choose_base_strategy};
 pub fn config_dir() -> Result<PathBuf> {
     let strategy = choose_base_strategy()?;
     let mut p = strategy.config_dir();
-    p.push("turbo-bible");
+    p.push("turbo-heresy");
     Ok(p)
 }
 
-/// `~/.local/share/turbo-bible/` on Linux / macOS via `etcetera`.
+/// `~/.local/share/turbo-heresy/` on Linux / macOS via `etcetera`.
 ///
 /// # Errors
 /// Propagates `etcetera::AppStrategyArgs` failures (`HOME` unset on
@@ -28,11 +28,11 @@ pub fn config_dir() -> Result<PathBuf> {
 pub fn data_dir() -> Result<PathBuf> {
     let strategy = choose_base_strategy()?;
     let mut p = strategy.data_dir();
-    p.push("turbo-bible");
+    p.push("turbo-heresy");
     Ok(p)
 }
 
-/// `~/.local/share/turbo-bible/translations/` — per-translation `.db`
+/// `~/.local/share/turbo-heresy/translations/` — per-translation `.db`
 /// files plus the shared `xrefs.db`, extracted from the binary's
 /// bundled assets on first launch.
 ///
