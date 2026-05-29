@@ -34,6 +34,19 @@ if ! command -v cargo >/dev/null 2>&1; then
   exit 1
 fi
 
+if ! command -v git >/dev/null 2>&1; then
+  red "git is required to fetch the source. Install git, then re-run."
+  exit 1
+fi
+
+# Cargo's built-in git client (libgit2) stumbles on common dev setups —
+# notably a `url."git@github.com:".insteadOf https://github.com/` rewrite,
+# which turns this HTTPS clone into an SSH one and then fails libgit2's auth
+# ("no authentication methods succeeded"). Delegating the fetch to the system
+# git CLI honors the user's git config, credential helper, and SSH agent. The
+# repo is public, so a clean machine needs no auth at all either way.
+export CARGO_NET_GIT_FETCH_WITH_CLI=true
+
 crimson "▒ Descending… building turbo-heresy from $URL"
 if [ -n "${TH_REF:-}" ]; then
   cargo install --git "$URL" --branch "$TH_REF" turbo-heresy
