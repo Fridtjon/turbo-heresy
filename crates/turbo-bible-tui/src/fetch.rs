@@ -31,7 +31,7 @@ fn base_url() -> String {
         return u.trim_end_matches('/').to_string();
     }
     format!(
-        "https://github.com/mathiasror/turbo-heresy/releases/download/v{}",
+        "https://github.com/fridtjon/turbo-heresy/releases/download/v{}",
         env!("CARGO_PKG_VERSION")
     )
 }

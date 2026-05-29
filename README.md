@@ -33,16 +33,19 @@ monologue greet you on launch.
 
 ## Setup
 
-Nothing to install — all three scriptures are embedded in the binary and
-extracted into `$XDG_DATA_HOME/turbo-heresy/translations/` (typically
-`~/.local/share/turbo-heresy/translations/`) on first launch. Fully
-offline from the first run; there is no download step.
+Installs **from source with Cargo** — no prebuilt binaries, no release infra.
+The one-liner just runs `cargo install --git` (so you need [Rust](https://rustup.rs)):
 
 ```sh
 curl -fsSL turbobible.no/install.sh | sh
+# …or, equivalently, run it yourself:
+cargo install --git https://github.com/fridtjon/turbo-heresy turbo-heresy
 ```
 
-Re-extract the embedded scriptures at any time:
+Once built there's nothing else to fetch: all three scriptures are **embedded
+in the binary** and extracted into `$XDG_DATA_HOME/turbo-heresy/translations/`
+(typically `~/.local/share/turbo-heresy/translations/`) on first launch — fully
+offline from the first run. Re-extract them any time with:
 
 ```sh
 turbo-heresy install --force

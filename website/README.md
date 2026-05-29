@@ -12,7 +12,7 @@ artifact. `CNAME` pins the custom domain to `turbobible.no`.
 
 DNS setup (do once, in the registrar): four `A` records for the
 apex pointing at GitHub Pages (`185.199.108.153`, `.109.153`,
-`.110.153`, `.111.153`) plus a `CNAME` `www → mathiasror.github.io.`.
+`.110.153`, `.111.153`) plus a `CNAME` `www → fridtjon.github.io.`.
 
 ## Working on it
 

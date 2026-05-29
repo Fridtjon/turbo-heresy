@@ -7,7 +7,7 @@ edition = "2024"
 rust-version = "1.88"
 license = "MIT OR Apache-2.0"
 homepage = "https://turbobible.no"
-repository = "https://github.com/mathiasror/turbo-bible"
+repository = "https://github.com/fridtjon/turbo-heresy"
 
 [workspace.dependencies]
 anyhow = "1"
