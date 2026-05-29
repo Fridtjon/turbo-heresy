@@ -1,20 +1,24 @@
 :root {
-    --bg:         #0000aa;
-    --bg-soft:    #1414b8;
-    --bg-dark:    #00007a;
+    /* "Abyssal" — TURBO HERESY's infernal palette (mirrors config.rs).
+       Crimson accent (--cyan/--cyan-2), sulfur-yellow highlights + logo
+       (--yellow), sulfur-green selection (--select), ashen text on a
+       near-black, blood-tinted field. */
+    --bg:         #0a0204;
+    --bg-soft:    #170609;
+    --bg-dark:    #050001;
     --black:      #000000;
-    --grey:       #aaaaaa;
-    --grey-dim:   #a5a5d0;
-    --white:      #ffffff;
-    --yellow:     #ffff55;
-    --yellow-2:   #ffdd33;
-    --cyan:       #00aaaa;
-    --cyan-2:     #00d4d4;
-    --select:     #08a88a;
-    --select-2:   #0fbfa0;
-    --shadow:     rgba(0,0,0,.55);
-    --bar:        #c4c4c4;
-    --bar-dark:   #808080;
+    --grey:       #9aa39a;
+    --grey-dim:   #5f665f;
+    --white:      #cdd4cd;
+    --yellow:     #d4d400;
+    --yellow-2:   #b3b300;
+    --cyan:       #b00020;
+    --cyan-2:     #e8324c;
+    --select:     #2f7d45;
+    --select-2:   #3fae5a;
+    --shadow:     rgba(0,0,0,.65);
+    --bar:        #8f968f;
+    --bar-dark:   #474d47;
   }
   * { box-sizing: border-box; }
   html, body {
@@ -59,7 +63,7 @@
     border-top: 1px solid var(--bar-dark);
   }
   .statusbar .k { color: var(--black); }
-  .statusbar .k b { color: #aa0000; }
+  .statusbar .k b { color: var(--cyan); }
   .statusbar .spacer { flex: 1; }
   .statusbar .mode {
     background: var(--select);
