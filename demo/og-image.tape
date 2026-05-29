@@ -29,7 +29,7 @@ Show
 
 # --- Launch en-kjv and let the splash settle ----------------------------
 Hide
-Type "./target/release/turbo-bible --translation en-kjv"
+Type "./target/release/turbo-heresy --translation en-plost"
 Enter
 Show
 Sleep 2500ms
