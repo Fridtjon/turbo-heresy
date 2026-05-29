@@ -1,13 +1,13 @@
 # Importing your own translation
 
-`turbo-bible` ships eleven curated translations, but you can add your
+`turbo-heresy` ships eleven curated translations, but you can add your
 own from a JSON file with the `import` subcommand. It builds a
 schema-correct SQLite database and installs it into the translations
 directory, ready to read on the next launch — no scrollmapper checkout
 and no data pipeline required.
 
 ```sh
-turbo-bible import myversion.json \
+turbo-heresy import myversion.json \
   --code xx-myver --name "My Version" --language xx
 ```
 
@@ -17,7 +17,7 @@ and appears in the in-app picker (`t` / `F5`).
 ## CLI
 
 ```
-turbo-bible import <FILE> --code <CODE> --name <NAME> --language <LANG>
+turbo-heresy import <FILE> --code <CODE> --name <NAME> --language <LANG>
                          [--license <SPDX>] [--attribution <TEXT>]
                          [--force] [--translations-dir <DIR>]
 ```
@@ -31,7 +31,7 @@ turbo-bible import <FILE> --code <CODE> --name <NAME> --language <LANG>
 | `--license`           |          | `LicenseRef-Unknown` | SPDX license expression for the text. |
 | `--attribution`       |          | `""`                 | Attribution line (required by some licenses, e.g. CC-BY). |
 | `--force`             |          | off                  | Overwrite an existing `<code>.db` instead of erroring. |
-| `--translations-dir`  |          | XDG data dir         | Install somewhere other than `~/.local/share/turbo-bible/translations/`. |
+| `--translations-dir`  |          | XDG data dir         | Install somewhere other than `~/.local/share/turbo-heresy/translations/`. |
 
 The command writes atomically (a sibling temp file is renamed into
 place), so an interrupted import never leaves a half-written database.

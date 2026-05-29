@@ -45,7 +45,7 @@ use Row::{Entry, Note, Section};
 /// unit test can walk it and assert removed keys (e.g. `T`) don't sneak
 /// back in.
 const ROWS: &[Row] = &[
-    Section("Movement"),
+    Section("Descent"),
     Entry("j  k  ↓ ↑", "next / previous verse"),
     Entry("h  l  ← →", "previous / next chapter"),
     Entry("[b  ]b", "previous / next book"),
@@ -54,27 +54,30 @@ const ROWS: &[Row] = &[
     Entry("gg  G", "first / last verse"),
     Entry("5j   10G", "count prefix (Vim-style)"),
     Entry("Ctrl-O  Ctrl-I", "jump back / forward in history"),
-    Section("Selection & bookmarks"),
+    Section("Binding & sigils"),
     Entry("v  V", "enter / exit visual selection"),
     Entry("b", "toggle bookmark on cursor / range"),
     Entry("y", "copy current verse to clipboard"),
-    Section("Reading view"),
+    Section("The Reading"),
     Entry("Tab", "toggle sidebar (focus next pane when comparing)"),
-    Entry("K", "footnote / cross-ref popup (s opens xref in a split)"),
-    Section("Compare panes"),
+    Entry(
+        "K",
+        "marginalia / inverted-ref popup (s opens it in a split)",
+    ),
+    Section("Infernal mirrors"),
     Entry("Ctrl-W v", "open a compare pane (pick a translation)"),
     Entry("Ctrl-W w", "cycle focus between panes"),
     Entry("Ctrl-W h  Ctrl-W l", "focus pane left / right"),
     Entry("Ctrl-W q", "close the focused pane"),
-    Note("Refs sidebar hides while comparing; use K for cross-refs."),
-    Section("Dialogs"),
+    Note("Marginalia sidebar hides while comparing; use K for inverted-refs."),
+    Section("Invocations"),
     Entry("F1", "this help"),
-    Entry("F2  :", "Goto reference (e.g. John 3:16)"),
-    Entry("F3  /", "Find (FTS5 search)"),
+    Entry("F2  :", "Summon passage (e.g. Liber I 1:263)"),
+    Entry("F3  /", "Scry (FTS5 search)"),
     Entry("n  N", "repeat last find forward / backward"),
-    Entry("F4  M", "Bookmarks"),
-    Entry("F5  t", "Translations"),
-    Section("Quit"),
+    Entry("F4  M", "Sigils"),
+    Entry("F5  t", "Tongues"),
+    Section("Abandon"),
     Entry("q  Esc  ZZ  ZQ  :q", "quit"),
 ];
 
@@ -155,7 +158,7 @@ impl HelpDialog {
         let w: u16 = outer.width.saturating_sub(6).min(64);
         let h: u16 = outer.height.saturating_sub(4).min(30);
         let area = dialog::center(outer, w, h);
-        let inner = dialog::draw_modal_dialog(outer, area, "Help", buf);
+        let inner = dialog::draw_modal_dialog(outer, area, "Catechism", buf);
 
         let bg = Style::new().bg(theme::blue());
         let label = Style::new().fg(theme::bright_white()).bg(theme::blue());
@@ -435,15 +438,16 @@ mod tests {
         let mut buf = Buffer::empty(area);
         dlg.render(area, &mut buf);
 
-        // "Refs" is the only capital-R word in the body (other rows use
-        // lowercase 'r' in "repeat"), so its 'R' uniquely identifies the
-        // Note row.
+        // The Note row is the only one containing the word "hides", so use that
+        // to locate it regardless of the rethemed section / entry labels.
         let mut note_y = None;
         for y in area.top()..area.bottom() {
+            let mut row = String::new();
             for x in area.left()..area.right() {
-                if buf[(x, y)].symbol() == "R" {
-                    note_y = Some(y);
-                }
+                row.push_str(buf[(x, y)].symbol());
+            }
+            if row.contains("hides") {
+                note_y = Some(y);
             }
         }
         let y = note_y.expect("Note row not found in rendered buffer");

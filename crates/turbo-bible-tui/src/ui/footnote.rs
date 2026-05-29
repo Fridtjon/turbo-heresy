@@ -126,7 +126,7 @@ impl FootnoteDialog {
             outer.height.saturating_sub(4).min(22)
         };
         let area = dialog::center(outer, w, h);
-        let title = format!("Notes for {}", self.verse_label);
+        let title = format!("Marginalia for {}", self.verse_label);
         let inner = dialog::draw_modal_dialog(outer, area, &title, buf);
 
         let bg = Style::new().bg(theme::blue());
@@ -154,9 +154,9 @@ impl FootnoteDialog {
         // but no upstream source populates the table at the pinned commit).
         for fn_ in &self.footnotes {
             let kind = if fn_.kind == "x" {
-                "Cross-ref"
+                "Inverted-ref"
             } else {
-                "Footnote"
+                "Whisper"
             };
             lines.push(Line::from(vec![
                 Span::styled("  ", bg),
@@ -173,7 +173,7 @@ impl FootnoteDialog {
         if !self.xrefs.is_empty() {
             lines.push(Line::from(vec![
                 Span::styled("  ", bg),
-                Span::styled("Cross-references:".to_string(), header_style),
+                Span::styled("Inverted-references:".to_string(), header_style),
             ]));
             for (xi, xref) in self.xrefs.iter().enumerate() {
                 let style = if xi == self.selected { sel } else { xref_color };
@@ -189,7 +189,7 @@ impl FootnoteDialog {
             lines.push(Line::from(vec![
                 Span::styled("  ", bg),
                 Span::styled(
-                    "(no notes or cross-references on this verse)",
+                    "(the void offers nothing for this verse)",
                     Style::new()
                         .fg(theme::light_grey())
                         .bg(theme::blue())

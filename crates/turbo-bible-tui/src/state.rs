@@ -1,4 +1,4 @@
-//! Session state in `~/.config/turbo-bible/state.toml`.
+//! Session state in `~/.config/turbo-heresy/state.toml`.
 //!
 //! Holds last-position-on-quit bookkeeping only. User preferences (e.g. the
 //! picker default) live in `config.toml`. v1 of this app wrote a JSON file

@@ -110,7 +110,7 @@ impl TranslationsDialog {
         let w: u16 = outer.width.saturating_sub(6).min(76);
         let h: u16 = outer.height.saturating_sub(4).min(16);
         let area = dialog::center(outer, w, h);
-        let inner = dialog::draw_modal_dialog(outer, area, "Translations", buf);
+        let inner = dialog::draw_modal_dialog(outer, area, "Tongues", buf);
 
         let bg = Style::new().bg(theme::blue());
         let dim = Style::new().fg(theme::light_grey()).bg(theme::blue());
@@ -205,7 +205,7 @@ impl TranslationsDialog {
         lines.push(Line::from(vec![
             Span::styled("  ", bg),
             Span::styled("[*] ", key_style),
-            Span::styled("installed   ", dim),
+            Span::styled("bound   ", dim),
             Span::styled("[ ] ", key_style),
             Span::styled("available   ", dim),
             Span::styled("\u{00BB} ", key_style),
@@ -215,7 +215,7 @@ impl TranslationsDialog {
         lines.push(Line::from(vec![
             Span::styled("  ", bg),
             Span::styled("Enter ", key_style),
-            Span::styled("install / select  ", dim),
+            Span::styled("bind / select  ", dim),
             Span::styled("\u{2191}\u{2193}/j k ", key_style),
             Span::styled("navigate  ", dim),
             Span::styled("Esc ", key_style),

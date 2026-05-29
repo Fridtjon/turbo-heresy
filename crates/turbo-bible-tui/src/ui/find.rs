@@ -117,7 +117,7 @@ impl FindDialog {
         let w: u16 = outer.width.saturating_sub(6).min(90);
         let h: u16 = outer.height.saturating_sub(4).min(22);
         let area = dialog::center(outer, w, h);
-        let inner = dialog::draw_modal_dialog(outer, area, "Find (full-text)", buf);
+        let inner = dialog::draw_modal_dialog(outer, area, "Scry (full-text)", buf);
 
         let bg = Style::new().bg(theme::blue());
         let label = Style::new().fg(theme::bright_white()).bg(theme::blue());
@@ -136,7 +136,7 @@ impl FindDialog {
         let mut lines: Vec<Line<'static>> = Vec::with_capacity(inner.height as usize);
         lines.push(blank());
         // Shared sunken input field — frames/pads/cursors identically to Goto.
-        let find_label = "  Find: ";
+        let find_label = "  Scry: ";
         // 2-cell inset before the inner right border — same rule as Goto so
         // both input fields end at the same margin.
         let field_w = u16::try_from(
@@ -154,7 +154,7 @@ impl FindDialog {
             lines.push(Line::from(vec![
                 Span::styled("  ", bg),
                 Span::styled(
-                    "\u{2192} (type to search, e.g. \"love\", \"kingdom of God\")",
+                    "\u{2192} (type to scry, e.g. \"fire\", \"the abyss\")",
                     Style::new()
                         .fg(theme::yellow())
                         .bg(theme::blue())
@@ -256,7 +256,7 @@ impl FindDialog {
             lines.push(Line::from(vec![
                 Span::styled("  ", bg),
                 Span::styled(
-                    "(no matches)",
+                    "(the void answers not)",
                     Style::new()
                         .fg(theme::light_grey())
                         .bg(theme::blue())

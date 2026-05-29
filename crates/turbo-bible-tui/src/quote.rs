@@ -1,7 +1,7 @@
-//! "Bible quote of the day" for the splash screen. Picks a deterministic
-//! verse based on the current calendar day, then resolves it against the DB.
-//! If the curated reference isn't in the corpus yet (e.g. crawl still in
-//! progress), we step to the next one.
+//! "Blasphemy of the day" for the splash screen. Picks a deterministic line
+//! based on the current calendar day, then resolves it against the active
+//! scripture's DB. If a curated reference isn't in the active text, we step to
+//! the next one — so each scripture surfaces its own.
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -10,43 +10,28 @@ use rusqlite::params;
 
 use crate::db::Db;
 
-/// Curated list of well-known references — OSIS ids.
+/// Curated infernal lines — OSIS-style ids into the bundled scriptures. Most
+/// resolve in Paradise Lost (the default; its 12 books occupy the GEN.. / MAT..
+/// slots, one chapter each, verse = Milton's line number); the REV entries
+/// resolve in Liber AL. `pick()` walks forward to the next id that exists in
+/// the active text, so each scripture surfaces its own.
 const CURATED: &[(&str, i64, i64)] = &[
-    ("GEN", 1, 1),
-    ("PSA", 23, 1),
-    ("PSA", 46, 10),
-    ("PSA", 119, 105),
-    ("PRO", 3, 5),
-    ("ISA", 40, 31),
-    ("ISA", 41, 10),
-    ("JER", 29, 11),
-    ("MAT", 5, 3),
-    ("MAT", 6, 33),
-    ("MAT", 11, 28),
-    ("MAT", 28, 19),
-    ("MRK", 12, 30),
-    ("LUK", 6, 31),
-    ("JHN", 1, 1),
-    ("JHN", 3, 16),
-    ("JHN", 14, 6),
-    ("ROM", 5, 8),
-    ("ROM", 8, 28),
-    ("ROM", 12, 2),
-    ("1CO", 13, 4),
-    ("1CO", 13, 13),
-    ("GAL", 5, 22),
-    ("EPH", 2, 8),
-    ("PHP", 4, 6),
-    ("PHP", 4, 13),
-    ("1JN", 4, 8),
-    ("HEB", 11, 1),
-    ("REV", 21, 4),
-    ("DEU", 6, 5),
+    ("GEN", 1, 263), // PL I.263 — "Better to reign in Hell than serve in Heaven."
+    ("GEN", 1, 254), // PL I.254 — "The mind is its own place..."
+    ("GEN", 1, 330), // PL I.330 — "Awake, arise, or be for ever fallen!"
+    ("GEN", 1, 106), // PL I.106 — "...All is not lost..."
+    ("GEN", 1, 105), // PL I.105 — "What though the field be lost?"
+    ("GEN", 1, 63),  // PL I.63  — "...darkness visible..."
+    ("GEN", 1, 1),   // PL I.1   — "Of Man's first disobedience..."
+    ("EXO", 1, 432), // PL II.432 — "...out of Hell leads up to light."
+    ("NUM", 1, 75),  // PL IV.75 — "Which way I fly is Hell; myself am Hell."
+    ("REV", 1, 40),  // Liber AL I.40 — "Do what thou wilt shall be the whole of the Law."
+    ("REV", 2, 9),   // Liber AL II.9
 ];
 
 #[derive(Debug, Clone)]
 pub struct DailyQuote {
-    pub reference: String, // e.g. "Salme 23,1"
+    pub reference: String, // e.g. "Liber I 1:263"
     pub text: String,
 }
 

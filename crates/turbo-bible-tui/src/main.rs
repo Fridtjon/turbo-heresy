@@ -1,12 +1,12 @@
-//! `turbo-bible` — a Turbo Vision–styled terminal Bible reader with
+//! `turbo-heresy` — a Turbo Vision–styled terminal Bible reader with
 //! FTS5 search.
 //!
 //! This crate is a single binary. See [`README.md`] for the user-facing
 //! tour and [`docs/USAGE.md`] for a feature walk-through; the source
 //! tree mirrors the README's "Layout" section.
 //!
-//! [`README.md`]: https://github.com/mathiasror/turbo-bible/blob/main/README.md
-//! [`docs/USAGE.md`]: https://github.com/mathiasror/turbo-bible/blob/main/docs/USAGE.md
+//! [`README.md`]: https://github.com/fridtjon/turbo-heresy/blob/main/README.md
+//! [`docs/USAGE.md`]: https://github.com/fridtjon/turbo-heresy/blob/main/docs/USAGE.md
 #![forbid(unsafe_code)]
 
 mod bookmark;
@@ -137,7 +137,7 @@ impl History {
 #[derive(Parser, Debug)]
 #[command(
     version,
-    about = "Turbo-Vision Bible reader",
+    about = "A Turbo Vision–styled terminal grimoire",
     args_conflicts_with_subcommands = true
 )]
 struct Args {
@@ -145,8 +145,8 @@ struct Args {
     command: Option<Commands>,
 
     /// Directory holding the per-translation `<code>.db` files plus
-    /// `xrefs.db`. Defaults to `$XDG_DATA_HOME/turbo-bible/translations/`
-    /// (i.e. `~/.local/share/turbo-bible/translations/` on Linux/macOS).
+    /// `xrefs.db`. Defaults to `$XDG_DATA_HOME/turbo-heresy/translations/`
+    /// (i.e. `~/.local/share/turbo-heresy/translations/` on Linux/macOS).
     /// First launch auto-extracts the bundled translations into this
     /// directory; pass `install --force` to re-extract.
     #[arg(long)]
@@ -554,7 +554,7 @@ fn save_or_warn<T>(out: &mut Vec<String>, what: &str, r: anyhow::Result<T>) {
 
 /// Resolve the translations directory: explicit `--translations-dir`
 /// flag wins; otherwise `paths::translations_dir()` (typically
-/// `~/.local/share/turbo-bible/translations/`).
+/// `~/.local/share/turbo-heresy/translations/`).
 fn resolve_translations_dir(args: &Args) -> Result<PathBuf> {
     if let Some(p) = args.translations_dir.clone() {
         return Ok(p);
@@ -588,7 +588,7 @@ fn resolve_translation(
     }
     installed.first().cloned().ok_or_else(|| {
         anyhow::anyhow!(
-            "No translations installed in {}. Run `turbo-bible install --force` \
+            "No translations installed in {}. Run `turbo-heresy install --force` \
              to extract the bundled default.",
             translations_dir.display()
         )
@@ -962,7 +962,7 @@ fn draw_frame(term: &mut Tty, state: &mut LoopState) -> Result<()> {
             None => mode_tag_for(state),
         }
     };
-    let menu_title = format!(" Turbo Bible \u{00B7} {} ", state.translation_label);
+    let menu_title = format!(" Turbo Heresy \u{00B7} {} ", state.translation_label);
 
     // Per-pane render inputs. Borrows `state.panes` + `state.bookmarks_cache`
     // (disjoint immutable borrows); `empty` covers the can't-happen miss so a
@@ -1779,7 +1779,7 @@ fn mode_tag_for(state: &LoopState) -> Cow<'static, str> {
 const STATUS_SPLASH: &[Shortcut<'static>] = &[
     Shortcut {
         key: "F1",
-        action: "Help",
+        action: "Rites",
     },
     Shortcut {
         key: "Enter",
@@ -1787,15 +1787,15 @@ const STATUS_SPLASH: &[Shortcut<'static>] = &[
     },
     Shortcut {
         key: "F2",
-        action: "Goto",
+        action: "Summon",
     },
     Shortcut {
         key: "F3",
-        action: "Find",
+        action: "Scry",
     },
     Shortcut {
         key: "Esc",
-        action: "Quit",
+        action: "Begone",
     },
 ];
 
@@ -1806,23 +1806,23 @@ const fn reading_shortcuts(tab_action: &'static str) -> [Shortcut<'static>; 8] {
     [
         Shortcut {
             key: "F1",
-            action: "Help",
+            action: "Rites",
         },
         Shortcut {
             key: "F2",
-            action: "Goto",
+            action: "Summon",
         },
         Shortcut {
             key: "F3",
-            action: "Find",
+            action: "Scry",
         },
         Shortcut {
             key: "K",
-            action: "Notes",
+            action: "Margin",
         },
         Shortcut {
             key: "v",
-            action: "Select",
+            action: "Mark",
         },
         Shortcut {
             key: "Tab",
@@ -1830,11 +1830,11 @@ const fn reading_shortcuts(tab_action: &'static str) -> [Shortcut<'static>; 8] {
         },
         Shortcut {
             key: "Esc",
-            action: "Home",
+            action: "Abyss",
         },
         Shortcut {
             key: "Q",
-            action: "Quit",
+            action: "Begone",
         },
     ]
 }
@@ -1851,7 +1851,7 @@ const STATUS_VISUAL: &[Shortcut<'static>] = &[
     },
     Shortcut {
         key: "b",
-        action: "Bookmark",
+        action: "Sigil",
     },
     Shortcut {
         key: "Esc",
@@ -1876,15 +1876,15 @@ const STATUS_READING_COMPARE: &[Shortcut<'static>] = &[
     },
     Shortcut {
         key: "K",
-        action: "Notes",
+        action: "Margin",
     },
     Shortcut {
         key: "Esc",
-        action: "Home",
+        action: "Abyss",
     },
     Shortcut {
         key: "Q",
-        action: "Quit",
+        action: "Begone",
     },
 ];
 
@@ -2146,7 +2146,7 @@ fn clamp_chapter(db: &Db, book: &str, chapter: i64) -> Result<i64> {
 /// Build the picker entry list: every translation the binary knows about
 /// (the static manifest), each marked installed iff its `.db` is on disk,
 /// followed by any on-disk translations *not* in the manifest — e.g. ones
-/// produced by `turbo-bible import`, which would otherwise be reachable
+/// produced by `turbo-heresy import`, which would otherwise be reachable
 /// only via `--translation`. The latter are always installed (they exist
 /// on disk by definition) and carry no download size.
 fn merge_picker_entries(installed: &[TranslationInfo]) -> Vec<PickerEntry> {
@@ -2283,16 +2283,16 @@ mod tests {
 
     #[test]
     fn picker_lists_manifest_marking_installed_and_appends_custom() {
-        // en-kjv is bundled/installed; zz-john is an imported translation
+        // en-plost is bundled/installed; zz-john is an imported translation
         // present on disk but absent from the static manifest.
-        let installed = [info("en-kjv"), info("zz-john")];
+        let installed = [info("en-plost"), info("zz-john")];
         let entries = merge_picker_entries(&installed);
 
         let kjv = entries
             .iter()
-            .find(|e| e.code == "en-kjv")
+            .find(|e| e.code == "en-plost")
             .expect("manifest entry present");
-        assert!(kjv.installed, "en-kjv is on disk → installed");
+        assert!(kjv.installed, "en-plost is on disk → installed");
 
         let custom = entries
             .iter()
@@ -2308,7 +2308,7 @@ mod tests {
         // A manifest translation that isn't on disk is listed, not installed.
         let absent = manifest::TRANSLATIONS
             .iter()
-            .find(|t| t.code != "en-kjv")
+            .find(|t| t.code != "en-plost")
             .expect("more than one manifest translation");
         let entry = entries
             .iter()

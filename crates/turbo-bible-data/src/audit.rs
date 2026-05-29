@@ -3,7 +3,7 @@
 //!
 //! The audit is the project's legal paper trail: the resulting CSV is
 //! compared by hand against `data/manifest_source.toml` (the curated
-//! slate of translations turbo-bible will ever build).
+//! slate of translations turbo-heresy will ever build).
 
 use std::fs;
 use std::io::Write;

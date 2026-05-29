@@ -2173,7 +2173,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "756daf9b1013ebe47a8776667b466417e2d4c5679d441c26230efd9ef78692db"
 
 [[package]]
-name = "turbo-bible"
+name = "turbo-heresy"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -2196,7 +2196,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "turbo-bible-data"
+name = "turbo-heresy-data"
 version = "0.1.0"
 dependencies = [
  "anyhow",

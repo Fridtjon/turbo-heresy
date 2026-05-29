@@ -54,7 +54,7 @@ mod tests {
     fn render_into_degenerate_buffer_does_not_panic() {
         for (w, h) in [(0u16, 0u16), (20, 0), (0, 1), (1, 1)] {
             let mut buf = Buffer::empty(Rect::new(0, 0, w, h));
-            render(" Turbo Bible ", Rect::new(0, 0, w.max(1), 1), &mut buf);
+            render(" Turbo Heresy ", Rect::new(0, 0, w.max(1), 1), &mut buf);
         }
     }
 }

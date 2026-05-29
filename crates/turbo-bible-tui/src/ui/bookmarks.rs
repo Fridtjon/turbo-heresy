@@ -181,7 +181,7 @@ impl BookmarksDialog {
         // subtitle below the frame does that job in natural-language voice.
         // Showing `Bookmarks (3)` and `3 saved verses` would double-count
         // the same fact across two adjacent rows.
-        let inner = dialog::draw_modal_dialog(outer, area, "Bookmarks", buf);
+        let inner = dialog::draw_modal_dialog(outer, area, "Sigils", buf);
 
         let bg = Style::new().bg(theme::blue());
         let dim = Style::new().fg(theme::light_grey()).bg(theme::blue());
@@ -210,9 +210,9 @@ impl BookmarksDialog {
         let mut lines: Vec<Line<'static>> = Vec::new();
         if !self.items.is_empty() {
             let noun = if self.items.len() == 1 {
-                "verse"
+                "soul"
             } else {
-                "verses"
+                "souls"
             };
             lines.push(Line::from(vec![
                 Span::styled("  ", bg),
@@ -225,11 +225,11 @@ impl BookmarksDialog {
             lines.push(Line::from(vec![
                 Span::styled("  ", bg),
                 Span::styled(
-                    "(no bookmarks yet — press ",
+                    "(no souls bound yet — press ",
                     dim.add_modifier(Modifier::ITALIC),
                 ),
                 Span::styled("b ", header),
-                Span::styled("on a verse to add)", dim.add_modifier(Modifier::ITALIC)),
+                Span::styled("on a verse to bind it)", dim.add_modifier(Modifier::ITALIC)),
             ]));
         } else {
             // Rows for cells = inner height − used-so-far − (blank + footer).

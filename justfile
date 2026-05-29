@@ -1,4 +1,4 @@
-# turbo-bible task runner. Requires `just` (https://just.systems).
+# turbo-heresy task runner. Requires `just` (https://just.systems).
 #
 # `just` (no args) lists recipes. `just check` is what CI runs.
 
@@ -56,46 +56,43 @@ baseline:
 
 # Launch the TUI with the project's default DB resolution.
 run *args:
-    cargo run -p turbo-bible --release -- {{args}}
+    cargo run -p turbo-heresy --release -- {{args}}
 
 # Data pipeline shortcuts. The first positional argument points at a
 # local scrollmapper/bible_databases checkout; remaining `*args` are
 # forwarded to the subcommand (e.g. `just data-audit -- --out a.csv`).
 data-audit scrollmapper="data/scrollmapper-checkout" *args="":
-    cargo run -p turbo-bible-data -- audit-licenses --scrollmapper {{scrollmapper}} {{args}}
+    cargo run -p turbo-heresy-data -- audit-licenses --scrollmapper {{scrollmapper}} {{args}}
 
 data-build scrollmapper="data/scrollmapper-checkout" *args="":
-    cargo run -p turbo-bible-data -- build --scrollmapper {{scrollmapper}} --manifest data/manifest_source.toml {{args}}
+    cargo run -p turbo-heresy-data -- build --scrollmapper {{scrollmapper}} --manifest data/manifest_source.toml {{args}}
 
 data-compress *args="":
-    cargo run -p turbo-bible-data -- compress {{args}}
+    cargo run -p turbo-heresy-data -- compress {{args}}
 
 # Build the data pipeline output and stage the TUI's assets/ dir so
-# build.rs + include_bytes! in src/bundled.rs have fresh inputs.
-# Only KJV is embedded in the binary; the manifest lets the binary
-# discover the rest at runtime and fetch from GitHub Releases.
-# Required before `cargo build -p turbo-bible` if assets/ is empty.
-bundle-translations scrollmapper="data/scrollmapper-checkout":
-    cargo run -p turbo-bible-data --release -- build --scrollmapper {{scrollmapper}} --manifest data/manifest_source.toml
-    cargo run -p turbo-bible-data --release -- compress
-    mkdir -p crates/turbo-bible-tui/assets
-    cp dist/translations/en-kjv.db.zst crates/turbo-bible-tui/assets/
-    cp dist/translations/manifest.json crates/turbo-bible-tui/assets/
+# Rebuild the three bundled scriptures (Paradise Lost / Liber AL / Unholy
+# Writ) and refresh crates/turbo-bible-tui/assets/ + manifest.json so
+# build.rs + include_bytes! in src/bundled.rs have fresh inputs. Needs
+# python3 + the `zstd` CLI and network access for the public-domain
+# sources. Required before `cargo build -p turbo-heresy` if assets/ is empty.
+bundle-translations:
+    python3 data/heresy/build_heresy.py
 
 # Re-record the README demo GIF. Requires `vhs` (https://github.com/charmbracelet/vhs).
 demo:
-    cargo build -p turbo-bible --release
+    cargo build -p turbo-heresy --release
     vhs demo/demo.tape
 
 # Re-render the labelled screenshots under docs/screenshots/.
 screenshots:
-    cargo build -p turbo-bible --release
+    cargo build -p turbo-heresy --release
     vhs demo/screenshots.tape
 
 # Re-render website/og-image.png (the 1200x630 social card) — a real VHS
 # capture of the splash, same toolchain as `demo` / `screenshots`.
 og-image:
-    cargo build -p turbo-bible --release
+    cargo build -p turbo-heresy --release
     vhs demo/og-image.tape
 
 # Re-render website/apple-touch-icon.png (the 180x180 home-screen icon). Requires Pillow.

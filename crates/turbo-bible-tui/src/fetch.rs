@@ -31,7 +31,7 @@ fn base_url() -> String {
         return u.trim_end_matches('/').to_string();
     }
     format!(
-        "https://github.com/mathiasror/turbo-bible/releases/download/v{}",
+        "https://github.com/fridtjon/turbo-heresy/releases/download/v{}",
         env!("CARGO_PKG_VERSION")
     )
 }
@@ -218,18 +218,19 @@ mod tests {
     use super::*;
 
     #[test]
-    fn known_kjv_sha_round_trips() {
-        // Sanity: the embedded KJV's decompressed sha256 matches the
-        // manifest entry. This guards against the build.rs codegen
-        // drifting from `assets/en-kjv.db.zst`.
-        let kjv = TranslationManifestEntry::by_code("en-kjv").expect("kjv in manifest");
+    fn known_default_sha_round_trips() {
+        // Sanity: the embedded default scripture's decompressed sha256 matches
+        // its manifest entry. Guards against the build.rs codegen drifting from
+        // `assets/en-plost.db.zst`.
+        let code = crate::bundled::DEFAULT_TRANSLATION;
+        let entry = TranslationManifestEntry::by_code(code).expect("default in manifest");
         let raw = crate::bundled::BUNDLED
             .iter()
-            .find(|a| a.code == "en-kjv")
-            .expect("kjv in bundled")
+            .find(|a| a.code == code)
+            .expect("default in bundled")
             .bytes;
         let decoded = zstd::decode_all(io::Cursor::new(raw)).expect("decompress");
-        assert_eq!(hex_sha256(&decoded), kjv.sha256);
+        assert_eq!(hex_sha256(&decoded), entry.sha256);
     }
 
     #[test]

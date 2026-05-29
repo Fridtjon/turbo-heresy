@@ -1,8 +1,8 @@
-//! User preferences in `~/.config/turbo-bible/config.toml`.
+//! User preferences in `~/.config/turbo-heresy/config.toml`.
 //!
 //! Layout:
 //! ```toml
-//! default_translation = "en-kjv"
+//! default_translation = "en-plost"
 //!
 //! [input]
 //! # "vim"   — hjkl, gg/G, n/N, counts (5j), chords (gg, [b, ZZ), :/ex-style commands.
@@ -16,17 +16,18 @@
 //! max_width          = 80
 //!
 //! [theme]
-//! blue         = "#0000aa"
-//! cyan         = "#00aaaa"
-//! mid_cyan     = "#2ad4d4"
-//! bright_cyan  = "#55ffff"
-//! teal         = "#006a6a"
-//! input_teal   = "#005f5f"
-//! bright_white = "#ffffff"
-//! light_grey   = "#aaaaaa"
-//! dark_grey    = "#555555"
-//! yellow       = "#ffff55"
-//! hotkey_red   = "#aa0000"
+//! # "Abyssal" defaults shown; any 24-bit hex works.
+//! blue         = "#000000"
+//! cyan         = "#8a0f0f"
+//! mid_cyan     = "#b00020"
+//! bright_cyan  = "#3fae5a"
+//! teal         = "#1a3a1a"
+//! input_teal   = "#0e1a0e"
+//! bright_white = "#b8c0b8"
+//! light_grey   = "#6a706a"
+//! dark_grey    = "#202420"
+//! yellow       = "#d4d400"
+//! hotkey_red   = "#c01030"
 //! black        = "#000000"
 //!
 //! [keys]
@@ -142,21 +143,24 @@ pub struct ThemeConfig {
 
 impl Default for ThemeConfig {
     fn default() -> Self {
-        // Classic CGA palette (24-bit RGB), matches the original Turbo Vision
-        // theme. Bump any value here to retheme.
+        // "Abyssal" palette (24-bit RGB) — TURBO HERESY's infernal reskin of the
+        // Turbo Vision CGA scheme: pitch-black field, deep-crimson accents,
+        // sulfur-green selection, sulfur-yellow chrome. The named slots keep
+        // their semantic roles (see the docs above); only the colors change, so
+        // every theme::*() call site follows. Bump any value here to retheme.
         Self {
-            blue: HexColor::new(0, 0, 170),
-            cyan: HexColor::new(0, 170, 170),
-            mid_cyan: HexColor::new(42, 212, 212),
-            bright_cyan: HexColor::new(85, 255, 255), // #55ffff CGA bright cyan
-            teal: HexColor::new(0, 106, 106),         // #006a6a cursor row
-            input_teal: HexColor::new(0, 95, 95),     // #005f5f input wells
-            bright_white: HexColor::new(255, 255, 255),
-            light_grey: HexColor::new(170, 170, 170),
-            dark_grey: HexColor::new(85, 85, 85),
-            yellow: HexColor::new(255, 255, 85),
-            hotkey_red: HexColor::new(170, 0, 0),
-            black: HexColor::new(0, 0, 0),
+            blue: HexColor::new(0, 0, 0),        // #000000 void (desktop/dialog bg)
+            cyan: HexColor::new(138, 15, 15),    // #8a0f0f deep crimson (list focus)
+            mid_cyan: HexColor::new(176, 0, 32), // #b00020 blood (sidebar headers)
+            bright_cyan: HexColor::new(63, 174, 90), // #3fae5a sulfur green (selection slab)
+            teal: HexColor::new(26, 58, 26),     // #1a3a1a swamp (cursor row fill)
+            input_teal: HexColor::new(14, 26, 14), // #0e1a0e sickly haze (input wells)
+            bright_white: HexColor::new(184, 192, 184), // #b8c0b8 ashen (borders/title)
+            light_grey: HexColor::new(106, 112, 106), // #6a706a grave grey (menubar/body)
+            dark_grey: HexColor::new(32, 36, 32), // #202420 char (shadow/dim)
+            yellow: HexColor::new(212, 212, 0),  // #d4d400 sulfur (verse #/hotkeys)
+            hotkey_red: HexColor::new(192, 16, 48), // #c01030 crimson (find marker)
+            black: HexColor::new(0, 0, 0),       // #000000 black (text on bright fills)
         }
     }
 }
@@ -531,7 +535,7 @@ mod tests {
         let cfg: Config = toml::from_str("").unwrap();
         assert_eq!(cfg.default_translation, None);
         assert_eq!(cfg.reading.max_width, 80);
-        assert_eq!(cfg.theme.blue.b, 0xaa);
+        assert_eq!(cfg.theme.cyan.r, 0x8a); // Abyssal deep-crimson default
     }
 
     #[test]
@@ -548,7 +552,7 @@ max_width = 100
         assert_eq!(cfg.default_translation.as_deref(), Some("nb-1930"));
         assert_eq!(cfg.reading.max_width, 100);
         assert!(cfg.reading.show_sidebar); // default kept
-        assert_eq!(cfg.theme.blue.b, 0xaa); // default kept
+        assert_eq!(cfg.theme.cyan.r, 0x8a); // Abyssal default kept
     }
 
     #[test]

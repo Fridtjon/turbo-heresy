@@ -32,7 +32,7 @@ impl Widget for SidebarView<'_> {
         // border — stays the unambiguous primary surface. The demotion is
         // carried by border COLOUR; both panes use a single-line frame (only
         // the modal dialogs use the heavier double border).
-        let title = " References ";
+        let title = " Marginalia ";
         let block = Block::default()
             .borders(Borders::ALL)
             .border_type(BorderType::Plain)
@@ -113,7 +113,7 @@ fn build_lines(
 
     // 1) Parallel passage (most recent `r` heading ≤ cursor_verse)
     if let Some(parallel) = current_parallel(p, cursor_verse) {
-        lines.push(Line::from(Span::styled(" Parallel passage", header)));
+        lines.push(Line::from(Span::styled(" Parallel blasphemies", header)));
         lines.push(Line::from(vec![
             Span::styled("   ", bg),
             Span::styled(parallel.text.clone(), dim),
@@ -131,7 +131,7 @@ fn build_lines(
     // 2) Footnotes (table currently unpopulated — see db::load_footnotes).
     let f_notes: Vec<_> = notes.iter().filter(|n| n.kind == "f").collect();
     if !f_notes.is_empty() {
-        lines.push(Line::from(Span::styled(" Footnotes", header)));
+        lines.push(Line::from(Span::styled(" Whispers", header)));
         for n in &f_notes {
             lines.push(Line::from(vec![
                 Span::styled("   ", bg),
@@ -151,7 +151,7 @@ fn build_lines(
         .take(SIDEBAR_XREF_CAP)
         .collect();
     if !xrefs.is_empty() {
-        lines.push(Line::from(Span::styled(" Cross-references", header)));
+        lines.push(Line::from(Span::styled(" Inverted-references", header)));
         for x in &xrefs {
             lines.push(Line::from(vec![
                 Span::styled("   \u{2192} ", xref_style),
@@ -163,7 +163,7 @@ fn build_lines(
 
     if notes.is_empty() && xrefs.is_empty() && current_parallel(p, cursor_verse).is_none() {
         lines.push(Line::from(Span::styled(
-            " (nothing for this verse)",
+            " (the void offers nothing)",
             Style::new()
                 .fg(theme::light_grey())
                 .bg(theme::blue())

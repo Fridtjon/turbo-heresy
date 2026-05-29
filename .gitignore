@@ -15,9 +15,10 @@ data/scrollmapper-checkout/
 # manifest in `data/manifest_source.toml` is the source of truth.
 data/licenses.csv
 
-# Pipeline output bundled into the TUI binary at build time. Populate
-# with `just bundle-translations`. Each .db.zst is ~4–6 MB; total ~52 MB.
-crates/turbo-bible-tui/assets/*.db.zst
+# TURBO HERESY commits its three bundled scriptures (~850 KB total) so
+# `cargo install --git` builds straight from the checkout — no release
+# infra. Regenerate them with `just bundle-translations`
+# (= `python3 data/heresy/build_heresy.py`).
 
 # VHS intermediate trace GIFs (the real output is the PNG each tape writes)
 demo/_screenshots-trace.gif

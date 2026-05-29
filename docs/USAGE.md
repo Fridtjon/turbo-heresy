@@ -1,4 +1,4 @@
-# turbo-bible — user guide
+# turbo-heresy — user guide
 
 A narrative walk-through of the features. For the terse keymap and config
 reference, see the [README](../README.md). For an animated overview, see
@@ -24,8 +24,8 @@ reference, see the [README](../README.md). For an animated overview, see
 ## First launch
 
 The King James Version is embedded in the binary and extracted into
-`$XDG_DATA_HOME/turbo-bible/translations/` on first launch, so there is
-nothing to install before reading. Launch with `cargo run -p turbo-bible
+`$XDG_DATA_HOME/turbo-heresy/translations/` on first launch, so there is
+nothing to install before reading. Launch with `cargo run -p turbo-heresy
 --release`. The first launch rebuilds the FTS5 index with a
 diacritic-folding tokenizer and a prefix index. This takes about a
 second and is cached — subsequent launches start instantly. (The other
@@ -36,8 +36,8 @@ You land on the splash screen. If you'd rather skip it and jump straight
 into a passage, pass `--book` and `--chapter`:
 
 ```sh
-cargo run -p turbo-bible --release -- --book JHN --chapter 3
-cargo run -p turbo-bible --release -- --translation nb-1930 --book GEN
+cargo run -p turbo-heresy --release -- --book JHN --chapter 3
+cargo run -p turbo-heresy --release -- --translation nb-1930 --book GEN
 ```
 
 Translation resolution at startup follows this order:
@@ -204,7 +204,7 @@ Bookmarks include the translation code, so the same verse in two
 translations counts as two bookmarks. The list is sorted in canonical
 order (Genesis → Revelation, then ascending chapter/verse).
 
-State persists to `~/.config/turbo-bible/bookmarks.toml`. Edit the file
+State persists to `~/.config/turbo-heresy/bookmarks.toml`. Edit the file
 by hand if you want to bulk-import or relabel — the format is stable.
 
 ## Footnotes and cross-references
@@ -304,7 +304,7 @@ verse.
 
 Panes split the body width evenly, so comparing wants a wide terminal —
 two 80-column readers need ~150+ columns. If a new pane would squeeze the
-columns below a readable width, turbo-bible refuses it and shows a brief
+columns below a readable width, turbo-heresy refuses it and shows a brief
 hint in the mode line rather than rendering an unreadable sliver. The
 layout is session-only: quitting saves the focused pane's position, not
 the whole split.
@@ -329,7 +329,7 @@ Quit. `Esc` or `Enter` closes it. The same content lives in `src/ui/help.rs`
 
 ## Customizing keys, theme, and layout
 
-All preferences live in `~/.config/turbo-bible/config.toml`. The file is
+All preferences live in `~/.config/turbo-heresy/config.toml`. The file is
 created on first save (e.g., the first time you switch translations).
 
 ### Theme
@@ -386,11 +386,11 @@ remappable.
 
 | Path | Purpose |
 | --- | --- |
-| `~/.config/turbo-bible/state.toml` | last-position bookkeeping; written on quit |
-| `~/.config/turbo-bible/bookmarks.toml` | saved bookmarks |
-| `~/.config/turbo-bible/config.toml` | user preferences |
-| `~/.local/share/turbo-bible/translations/<code>.db` | per-translation verse databases (KJV extracted on first launch; the other ten fetched on demand) |
-| `~/.local/share/turbo-bible/translations/xrefs.db` | shared cross-references database |
+| `~/.config/turbo-heresy/state.toml` | last-position bookkeeping; written on quit |
+| `~/.config/turbo-heresy/bookmarks.toml` | saved bookmarks |
+| `~/.config/turbo-heresy/config.toml` | user preferences |
+| `~/.local/share/turbo-heresy/translations/<code>.db` | per-translation verse databases (KJV extracted on first launch; the other ten fetched on demand) |
+| `~/.local/share/turbo-heresy/translations/xrefs.db` | shared cross-references database |
 
 Locations honour `$XDG_CONFIG_HOME` and `$XDG_DATA_HOME` if set. Legacy
 `state.json` / `bookmarks.json` files are migrated to TOML on first launch

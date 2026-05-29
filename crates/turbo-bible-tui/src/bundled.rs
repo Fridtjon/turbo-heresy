@@ -1,8 +1,10 @@
-//! Compile-time embedded translation. Only `en-kjv` ships in the
-//! binary (~4 MB zstd); the other ten translations and the
-//! cross-references DB are downloaded from GitHub Releases on demand
-//! by [`crate::fetch`], driven off the static catalogue in
-//! [`crate::manifest`].
+//! Compile-time embedded scriptures. TURBO HERESY ships all three texts
+//! in the binary (zstd-compressed) — there is no runtime fetch: `en-plost`
+//! (Milton's *Paradise Lost*, the default), `en-liber-al` (Crowley's *Liber
+//! AL vel Legis*), and `en-unholy` (the hand-written *Unholy Writ*). The
+//! static catalogue lives in [`crate::manifest`]; [`crate::fetch`] remains
+//! for the dormant on-demand path but is unused while every shipped text is
+//! bundled.
 //!
 //! Decompression and on-disk extraction live in [`crate::install`].
 
@@ -13,15 +15,25 @@ pub struct BundledAsset {
     pub bytes: &'static [u8],
 }
 
-/// The translation code that's always available offline.
-pub const DEFAULT_TRANSLATION: &str = "en-kjv";
+/// The scripture that greets on launch — always available offline.
+pub const DEFAULT_TRANSLATION: &str = "en-plost";
 
-/// Translations embedded in the binary. The single entry is the
-/// English default; everything else is fetched at runtime.
-pub const BUNDLED: &[BundledAsset] = &[BundledAsset {
-    code: DEFAULT_TRANSLATION,
-    bytes: include_bytes!("../assets/en-kjv.db.zst"),
-}];
+/// Scriptures embedded in the binary. All three ship offline; the default
+/// (`en-plost`, *Paradise Lost*) is first. Nothing is fetched at runtime.
+pub const BUNDLED: &[BundledAsset] = &[
+    BundledAsset {
+        code: DEFAULT_TRANSLATION,
+        bytes: include_bytes!("../assets/en-plost.db.zst"),
+    },
+    BundledAsset {
+        code: "en-liber-al",
+        bytes: include_bytes!("../assets/en-liber-al.db.zst"),
+    },
+    BundledAsset {
+        code: "en-unholy",
+        bytes: include_bytes!("../assets/en-unholy.db.zst"),
+    },
+];
 
 #[cfg(test)]
 mod tests {

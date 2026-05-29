@@ -1,4 +1,4 @@
-//! `turbo-bible-data compress` — zstd-compress every `<code>.db` in
+//! `turbo-heresy-data compress` — zstd-compress every `<code>.db` in
 //! `dist/build/` into `dist/translations/<code>.db.zst` and emit
 //! `manifest.json`.
 //!
