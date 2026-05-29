@@ -37,7 +37,7 @@ Type "export XDG_CONFIG_HOME=$(mktemp -d)"
 Enter
 Type "clear"
 Enter
-Type "./target/release/turbo-bible --translation en-kjv"
+Type "./target/release/turbo-heresy --translation en-plost"
 Enter
 Sleep 1500ms
 Show

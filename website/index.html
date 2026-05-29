@@ -174,7 +174,7 @@
       <div class="feat">
         <div class="num">// 01</div>
         <h3>Smitingly fast.</h3>
-        <p>Written in Rust. Type a phrase, get every match across every translation in under a heartbeat. No "Did you mean…" No "top results from the web." No tracking pixels. Just verses.</p>
+        <p>Written in Rust. Type a phrase, get every match across all three scriptures in under a heartbeat. No "Did you mean…" No "top results from the web." No tracking pixels. Just verses.</p>
       </div>
       <div class="feat">
         <div class="num">// 02</div>
@@ -183,13 +183,13 @@
       </div>
       <div class="feat">
         <div class="num">// 03</div>
-        <h3>Eleven translations, seven languages.</h3>
-        <p>English, Norwegian, Spanish, German, French, Portuguese, Latin. KJV through the Clementine Vulgate. Press <code>t</code> to switch; the cursor stays on the same verse.</p>
+        <h3>Three dark scriptures.</h3>
+        <p>Milton's <em>Paradise Lost</em>, Crowley's <em>Liber AL vel Legis</em>, and the hand-written <em>Unholy Writ</em> — all embedded in the binary, all public domain or CC0. Press <code>t</code> to switch tongues; the cursor stays put.</p>
       </div>
       <div class="feat">
         <div class="num">// 04</div>
-        <h3>Cross-references, built in.</h3>
-        <p>Every verse links to the verses it quotes or echoes. Two keystrokes to follow Paul back to the prophets. Two more to come home.</p>
+        <h3>Compare panes, side by side.</h3>
+        <p><code>Ctrl-W v</code> splits the reader so you can set Milton against Crowley against your own profane marginalia — each pane its own scripture, position, and cursor.</p>
       </div>
       <div class="feat">
         <div class="num">// 05</div>
@@ -226,7 +226,7 @@
   <!-- ==================== QUICK START ==================== -->
   <section class="panel" data-screen-label="06 Quick start" id="quickstart">
     <div class="title">Quick start</div>
-    <span class="right-tag">three keystrokes from clean shell to Psalm 23</span>
+    <span class="right-tag">three keystrokes from clean shell to Pandæmonium</span>
 
     <div class="section-h" style="margin-bottom:22px">
       <h2>Three commands. No prayer required.</h2>
@@ -263,35 +263,36 @@
 
     <div class="faq-list">
       <div class="faq-item">
-        <h3 class="faq-q"><span class="marker">Q.</span><span>Which translations are included?</span></h3>
+        <h3 class="faq-q"><span class="marker">Q.</span><span>Which scriptures are included?</span></h3>
         <p class="faq-a">
-          Eleven, across seven languages. English: KJV, ASV, YLT, Douay-Rheims,
-          Berean Standard. Norwegian: Bibelen 1930. Spanish: Reina-Valera 1909.
-          German: Menge-Bibel. French: Crampon 1923. Portuguese: Bíblia Livre.
-          Latin: Clementine Vulgate. All public domain or CC0/CC-BY. The
-          King James Version ships inside the binary; the other ten download
-          on first open (the curl installer pre-stages all eleven, so a
-          curl-installed copy is fully offline). Modern in-copyright
-          translations aren't, for the obvious commercial-law reason.
+          Three, all embedded in the binary. Milton's <em>Paradise Lost</em>
+          (1667 — the default; Satan's opening monologue greets you on launch),
+          Crowley's <em>Liber AL vel Legis</em> (1904), and the hand-written
+          <em>Unholy Writ</em>. Public domain or CC0 — nothing in copyright, so
+          LaVey's <em>Satanic Bible</em> stays out for the obvious reason. Since
+          all three ship inside the binary, it's fully offline from the first
+          launch — no download step.
         </p>
       </div>
       <div class="faq-item">
-        <h3 class="faq-q"><span class="marker">Q.</span><span>Can I add a custom translation?</span></h3>
+        <h3 class="faq-q"><span class="marker">Q.</span><span>Can I add my own scripture?</span></h3>
         <p class="faq-a">
-          Yes. Any text in the bundled SQLite schema works. The docs cover the
-          schema and a converter script for the most common public formats. If
-          it's already in a common Bible-database format, it's a one-command
-          import. If it's in a binder in your closet, scan it in like a pilgrim.
+          Yes. <code>turbo-heresy import yourrite.json …</code> builds a SQLite
+          database from a JSON of books / chapters / verses and installs it
+          alongside the three — no rebuild. The bundled texts are built exactly
+          this way (see <code>data/heresy/build_heresy.py</code>). Bring your own
+          grimoire.
         </p>
       </div>
       <div class="faq-item">
         <h3 class="faq-q"><span class="marker">Q.</span><span>Why a TUI? Is this a joke?</span></h3>
         <p class="faq-a">
-          No. The terminal is where developers already live, terminal apps are
-          faster and more focused than web or mobile apps, and the Turbo Vision
-          aesthetic is genuinely pleasant to look at. The Bible is text. Text
-          is what terminals are for. If we wanted to put scripture in a
-          JavaScript framework, the apostles would weep.
+          Both. It's a parody — a satanic reskin that says NO to the glossy
+          False Bible at turbo.bible — and a genuinely fast, offline, vim-driven
+          reader underneath. The terminal is where the faithful already live,
+          the Turbo Vision aesthetic is genuinely pleasant, and rendering
+          Paradise Lost in black-and-crimson is its own dark reward. If we wanted
+          to put scripture in a JavaScript framework, the fallen angels would weep.
         </p>
       </div>
       <div class="faq-item">
